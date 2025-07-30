@@ -1,22 +1,21 @@
 import React, { useState } from 'react';
 import { Lock, Eye, AlertCircle, CheckCircle, Copy } from 'lucide-react';
-import { ImageUpload } from './ImageUpload';
-import { SteganographyUtils } from '../utils/steganography';
-import { ProcessingState } from '../types/steganography';
+import { ImageUpload } from './ImageUpload.jsx';
+import SteganographyUtils from '../types/steganography.js';
 
-export const MessageDecoder: React.FC = () => {
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+export const MessageDecoder = () => {
+  const [selectedImage, setSelectedImage] = useState(null);
   const [password, setPassword] = useState('');
   const [usePassword, setUsePassword] = useState(false);
-  const [processing, setProcessing] = useState<ProcessingState>({
+  const [processing, setProcessing] = useState({
     isProcessing: false,
     progress: 0,
     status: ''
   });
-  const [result, setResult] = useState<{ success: boolean; message?: string; error?: string } | null>(null);
+  const [result, setResult] = useState(null);
   const [showMessage, setShowMessage] = useState(false);
 
-  const handleImageUpload = (file: File) => {
+  const handleImageUpload = (file) => {
     setSelectedImage(file);
     setResult(null);
     setShowMessage(false);
@@ -32,7 +31,7 @@ export const MessageDecoder: React.FC = () => {
     if (!selectedImage) return;
 
     setProcessing({ isProcessing: true, progress: 0, status: 'Loading image...' });
-    
+
     try {
       // Simulate progress updates
       const progressSteps = [
@@ -54,7 +53,7 @@ export const MessageDecoder: React.FC = () => {
 
       setProcessing(prev => ({ ...prev, progress: 100, status: 'Complete!' }));
       setResult(decodingResult);
-      
+
       if (decodingResult.success) {
         setPassword('');
       }
@@ -71,7 +70,7 @@ export const MessageDecoder: React.FC = () => {
     if (result?.message) {
       try {
         await navigator.clipboard.writeText(result.message);
-        // You could add a toast notification here
+        // Optionally, show a toast here
       } catch (err) {
         console.error('Failed to copy text: ', err);
       }
@@ -109,7 +108,6 @@ export const MessageDecoder: React.FC = () => {
         <div className="bg-white rounded-xl shadow-lg p-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-2">Decode Settings</h3>
           <p className="text-sm text-gray-600 mb-6">Configure decoding options</p>
-          
           <div className="space-y-4">
             <label className="flex items-center space-x-3 cursor-pointer">
               <input

@@ -1,29 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Lock, Download, AlertCircle, CheckCircle } from 'lucide-react';
-import { ImageUpload } from './ImageUpload';
-import { SteganographyUtils } from '../utils/steganography';
-import { ProcessingState } from '../types/steganography';
+import { ImageUpload } from './ImageUpload.jsx';
+import SteganographyUtils from '../types/steganography.js';
 
-export const MessageEncoder: React.FC = () => {
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+export const MessageEncoder = () => {
+  const [selectedImage, setSelectedImage] = useState(null);
   const [message, setMessage] = useState('');
   const [password, setPassword] = useState('');
   const [usePassword, setUsePassword] = useState(false);
-  const [processing, setProcessing] = useState<ProcessingState>({
+  const [processing, setProcessing] = useState({
     isProcessing: false,
     progress: 0,
     status: ''
   });
-  const [result, setResult] = useState<{ success: boolean; imageUrl?: string; error?: string } | null>(null);
-  const [imageCapacity, setImageCapacity] = useState<number | null>(null);
+  const [result, setResult] = useState(null);
+  const [imageCapacity, setImageCapacity] = useState(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedImage) {
       SteganographyUtils.getImageCapacity(selectedImage).then(setImageCapacity);
     }
   }, [selectedImage]);
 
-  const handleImageUpload = (file: File) => {
+  const handleImageUpload = (file) => {
     setSelectedImage(file);
     setResult(null);
   };
@@ -38,7 +37,7 @@ export const MessageEncoder: React.FC = () => {
     if (!selectedImage || !message.trim()) return;
 
     setProcessing({ isProcessing: true, progress: 0, status: 'Preparing image...' });
-    
+
     try {
       // Simulate progress updates
       const progressSteps = [
@@ -61,7 +60,7 @@ export const MessageEncoder: React.FC = () => {
 
       setProcessing(prev => ({ ...prev, progress: 100, status: 'Complete!' }));
       setResult(encodingResult);
-      
+
       if (encodingResult.success) {
         setMessage('');
         setPassword('');
@@ -109,7 +108,7 @@ export const MessageEncoder: React.FC = () => {
             currentImage={selectedImage}
             onRemoveImage={handleRemoveImage}
           />
-          
+
           {imageCapacity && (
             <div className="mt-4 p-3 bg-gray-50 rounded-lg">
               <p className="text-sm text-gray-600">
@@ -123,7 +122,7 @@ export const MessageEncoder: React.FC = () => {
         <div className="bg-white rounded-xl shadow-lg p-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-2">Secret Message</h3>
           <p className="text-sm text-gray-600 mb-4">Enter the text you want to hide</p>
-          
+
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -131,7 +130,7 @@ export const MessageEncoder: React.FC = () => {
             rows={6}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
           />
-          
+
           <div className="flex justify-between items-center mt-3">
             <span className={`text-sm ${isMessageTooLong ? 'text-red-600' : 'text-gray-500'}`}>
               {messageLength} / {imageCapacity || '?'} characters
@@ -212,7 +211,7 @@ export const MessageEncoder: React.FC = () => {
               {result.success ? 'Message Hidden Successfully!' : 'Encoding Failed'}
             </h3>
           </div>
-          
+
           {result.success ? (
             <div className="space-y-4">
               <p className="text-green-700">

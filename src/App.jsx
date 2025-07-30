@@ -5,7 +5,8 @@ import { MessageDecoder } from './components/MessageDecoder';
 import { Footer } from './components/Footer';
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'encode' | 'decode'>('encode');
+  // No TS generic types here — pure JS
+  const [activeTab, setActiveTab] = useState('encode');
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">

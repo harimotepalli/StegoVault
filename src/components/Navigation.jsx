@@ -1,12 +1,7 @@
 import React from 'react';
 import { Eye, EyeOff, Shield } from 'lucide-react';
 
-interface NavigationProps {
-  activeTab: 'encode' | 'decode';
-  onTabChange: (tab: 'encode' | 'decode') => void;
-}
-
-export const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
+export const Navigation = ({ activeTab, onTabChange }) => {
   return (
     <div className="bg-white shadow-sm border-b">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">

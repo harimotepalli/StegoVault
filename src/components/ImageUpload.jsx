@@ -1,15 +1,7 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { Upload, Image as ImageIcon, X } from 'lucide-react';
 
-interface ImageUploadProps {
-  onImageUpload: (file: File) => void;
-  currentImage?: File;
-  onRemoveImage?: () => void;
-  title: string;
-  subtitle: string;
-}
-
-export const ImageUpload: React.FC<ImageUploadProps> = ({
+export const ImageUpload = ({
   onImageUpload,
   currentImage,
   onRemoveImage,
@@ -17,9 +9,9 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   subtitle
 }) => {
   const [dragActive, setDragActive] = useState(false);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (currentImage) {
       const url = URL.createObjectURL(currentImage);
       setImagePreview(url);
@@ -29,7 +21,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
     }
   }, [currentImage]);
 
-  const handleDrag = useCallback((e: React.DragEvent) => {
+  const handleDrag = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     if (e.type === 'dragenter' || e.type === 'dragover') {
@@ -39,12 +31,12 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
     }
   }, []);
 
-  const validateAndUploadFile = (file: File) => {
+  const validateAndUploadFile = (file) => {
     if (!file.type.startsWith('image/')) {
       alert('Please select a valid image file');
       return;
     }
-    
+
     if (file.size > 10 * 1024 * 1024) { // 10MB limit
       alert('File size must be less than 10MB');
       return;
@@ -53,7 +45,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
     onImageUpload(file);
   };
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
+  const handleDrop = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
@@ -63,7 +55,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
     }
   }, [onImageUpload]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e) => {
     e.preventDefault();
     if (e.target.files && e.target.files[0]) {
       validateAndUploadFile(e.target.files[0]);
@@ -72,14 +64,14 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 
   const handleRemove = () => {
     setImagePreview(null);
-    onRemoveImage?.();
+    if (onRemoveImage) onRemoveImage();
   };
 
   return (
     <div className="w-full">
       <h3 className="text-lg font-semibold text-gray-800 mb-2">{title}</h3>
       <p className="text-sm text-gray-600 mb-4">{subtitle}</p>
-      
+
       {imagePreview ? (
         <div className="relative border-2 border-gray-200 rounded-lg p-4 bg-gray-50">
           <div className="flex items-center justify-between mb-4">
