@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Lock, Download, AlertCircle, CheckCircle } from 'lucide-react';
 import { ImageUpload } from './ImageUpload.jsx';
-import SteganographyUtils from '../types/steganography.js';
+import { SteganographyUtils } from '../utils/steganography.js';
 
 export const MessageEncoder = () => {
   const [selectedImage, setSelectedImage] = useState(null);

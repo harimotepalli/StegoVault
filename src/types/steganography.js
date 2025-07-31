@@ -21,20 +21,20 @@
  * @property {string} status
  */
 
-// Add the actual implementation below...
+// // Add the actual implementation below...
 
-const SteganographyUtils = {
-  async encodeMessage(imageFile, message, password) {
-    // ...implementation code goes here
-  },
+// const SteganographyUtils = {
+//   async encodeMessage(imageFile, message, password) {
+//     // ...implementation code goes here
+//   },
 
-  async decodeMessage(imageFile, password) {
-    // ...implementation code goes here
-  },
+//   async decodeMessage(imageFile, password) {
+//     // ...implementation code goes here
+//   },
 
-  async getImageCapacity(imageFile) {
-    // ...implementation code goes here
-  }
-};
+//   async getImageCapacity(imageFile) {
+//     // ...implementation code goes here
+//   }
+// };
 
-export default SteganographyUtils;
+// export default SteganographyUtils;
