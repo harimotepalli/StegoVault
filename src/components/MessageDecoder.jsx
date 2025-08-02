@@ -27,44 +27,94 @@ export const MessageDecoder = () => {
     setShowMessage(false);
   };
 
+  // const handleDecode = async () => {
+  //   if (!selectedImage) return;
+
+  //   setProcessing({ isProcessing: true, progress: 0, status: 'Loading image...' });
+
+  //   try {
+  //     // Simulate progress updates
+  //     const progressSteps = [
+  //       { progress: 25, status: 'Analyzing image...' },
+  //       { progress: 50, status: 'Extracting hidden data...' },
+  //       { progress: 75, status: 'Decoding message...' },
+  //       { progress: 90, status: 'Finalizing...' }
+  //     ];
+
+  //     for (const step of progressSteps) {
+  //       setProcessing(prev => ({ ...prev, ...step }));
+  //       await new Promise(resolve => setTimeout(resolve, 300));
+  //     }
+
+  //     const decodingResult = await SteganographyUtils.decodeMessage(
+  //       selectedImage,
+  //       usePassword ? password : undefined
+  //     );
+
+  //     setProcessing(prev => ({ ...prev, progress: 100, status: 'Complete!' }));
+  //     setResult(decodingResult);
+
+  //     if (decodingResult.success) {
+  //       setPassword('');
+  //     }
+  //   } catch (error) {
+  //     setResult({ success: false, error: 'Decoding failed' });
+  //   } finally {
+  //     setTimeout(() => {
+  //       setProcessing({ isProcessing: false, progress: 0, status: '' });
+  //     }, 1000);
+  //   }
+  // };
+
   const handleDecode = async () => {
-    if (!selectedImage) return;
+  if (!selectedImage) return;
 
-    setProcessing({ isProcessing: true, progress: 0, status: 'Loading image...' });
+  setProcessing({ isProcessing: true, progress: 0, status: 'Loading image...' });
 
-    try {
-      // Simulate progress updates
-      const progressSteps = [
-        { progress: 25, status: 'Analyzing image...' },
-        { progress: 50, status: 'Extracting hidden data...' },
-        { progress: 75, status: 'Decoding message...' },
-        { progress: 90, status: 'Finalizing...' }
-      ];
+  try {
+    const progressSteps = [
+      { progress: 25, status: 'Analyzing image...' },
+      { progress: 50, status: 'Extracting hidden data...' },
+      { progress: 75, status: 'Decoding message...' },
+      { progress: 90, status: 'Finalizing...' }
+    ];
 
-      for (const step of progressSteps) {
-        setProcessing(prev => ({ ...prev, ...step }));
-        await new Promise(resolve => setTimeout(resolve, 300));
-      }
-
-      const decodingResult = await SteganographyUtils.decodeMessage(
-        selectedImage,
-        usePassword ? password : undefined
-      );
-
-      setProcessing(prev => ({ ...prev, progress: 100, status: 'Complete!' }));
-      setResult(decodingResult);
-
-      if (decodingResult.success) {
-        setPassword('');
-      }
-    } catch (error) {
-      setResult({ success: false, error: 'Decoding failed' });
-    } finally {
-      setTimeout(() => {
-        setProcessing({ isProcessing: false, progress: 0, status: '' });
-      }, 1000);
+    for (const step of progressSteps) {
+      setProcessing(prev => ({ ...prev, ...step }));
+      console.log(`Progress update: ${step.progress}% - ${step.status}`);
+      await new Promise(resolve => setTimeout(resolve, 300));
     }
-  };
+
+    // Debug: Input going into decodeMessage
+    console.log('Calling SteganographyUtils.decodeMessage with:', selectedImage, usePassword ? password : undefined);
+
+    const decodingResult = await SteganographyUtils.decodeMessage(
+      selectedImage,
+      usePassword ? password : undefined
+    );
+
+    // Debug: Output of SteganographyUtils
+    console.log('Decoding result:', decodingResult);
+
+    setProcessing(prev => ({ ...prev, progress: 100, status: 'Complete!' }));
+    setResult(decodingResult);
+
+    if (decodingResult.success) {
+      console.log('Message decoded successfully:', decodingResult.message);
+      setPassword('');
+    } else {
+      console.warn('Decoding failed:', decodingResult.error);
+    }
+  } catch (error) {
+    setResult({ success: false, error: 'Decoding failed' });
+    console.error('Error during decoding:', error);
+  } finally {
+    setTimeout(() => {
+      setProcessing({ isProcessing: false, progress: 0, status: '' });
+    }, 1000);
+  }
+};
+
 
   const copyToClipboard = async () => {
     if (result?.message) {

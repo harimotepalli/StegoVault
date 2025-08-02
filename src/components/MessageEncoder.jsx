@@ -33,46 +33,102 @@ export const MessageEncoder = () => {
     setResult(null);
   };
 
+  // const handleEncode = async () => {
+  //   if (!selectedImage || !message.trim()) return;
+
+  //   setProcessing({ isProcessing: true, progress: 0, status: 'Preparing image...' });
+
+  //   try {
+  //     // Simulate progress updates
+  //     const progressSteps = [
+  //       { progress: 25, status: 'Converting image...' },
+  //       { progress: 50, status: 'Encoding message...' },
+  //       { progress: 75, status: 'Applying steganography...' },
+  //       { progress: 90, status: 'Finalizing...' }
+  //     ];
+
+  //     for (const step of progressSteps) {
+  //       setProcessing(prev => ({ ...prev, ...step }));
+  //       await new Promise(resolve => setTimeout(resolve, 300));
+  //     }
+
+  //     const encodingResult = await SteganographyUtils.encodeMessage(
+  //       selectedImage,
+  //       message,
+  //       usePassword ? password : undefined
+  //     );
+
+  //     setProcessing(prev => ({ ...prev, progress: 100, status: 'Complete!' }));
+  //     setResult(encodingResult);
+
+  //     if (encodingResult.success) {
+  //       setMessage('');
+  //       setPassword('');
+  //     }
+  //   } catch (error) {
+  //     setResult({ success: false, error: 'Encoding failed' });
+  //   } finally {
+  //     setTimeout(() => {
+  //       setProcessing({ isProcessing: false, progress: 0, status: '' });
+  //     }, 1000);
+  //   }
+  // };
+
   const handleEncode = async () => {
-    if (!selectedImage || !message.trim()) return;
+  if (!selectedImage || !message.trim()) return;
 
-    setProcessing({ isProcessing: true, progress: 0, status: 'Preparing image...' });
+  // Debug: Inputs and config
+  console.log('Starting encode process');
+  console.log('Selected image:', selectedImage);
+  console.log('Message to encode:', message);
+  console.log('Password usage:', usePassword, 'Password:', password);
 
-    try {
-      // Simulate progress updates
-      const progressSteps = [
-        { progress: 25, status: 'Converting image...' },
-        { progress: 50, status: 'Encoding message...' },
-        { progress: 75, status: 'Applying steganography...' },
-        { progress: 90, status: 'Finalizing...' }
-      ];
+  setProcessing({ isProcessing: true, progress: 0, status: 'Preparing image...' });
 
-      for (const step of progressSteps) {
-        setProcessing(prev => ({ ...prev, ...step }));
-        await new Promise(resolve => setTimeout(resolve, 300));
-      }
+  try {
+    const progressSteps = [
+      { progress: 25, status: 'Converting image...' },
+      { progress: 50, status: 'Encoding message...' },
+      { progress: 75, status: 'Applying steganography...' },
+      { progress: 90, status: 'Finalizing...' }
+    ];
 
-      const encodingResult = await SteganographyUtils.encodeMessage(
-        selectedImage,
-        message,
-        usePassword ? password : undefined
-      );
-
-      setProcessing(prev => ({ ...prev, progress: 100, status: 'Complete!' }));
-      setResult(encodingResult);
-
-      if (encodingResult.success) {
-        setMessage('');
-        setPassword('');
-      }
-    } catch (error) {
-      setResult({ success: false, error: 'Encoding failed' });
-    } finally {
-      setTimeout(() => {
-        setProcessing({ isProcessing: false, progress: 0, status: '' });
-      }, 1000);
+    for (const step of progressSteps) {
+      setProcessing(prev => ({ ...prev, ...step }));
+      console.log(`Progress update: ${step.progress}% - ${step.status}`);
+      await new Promise(resolve => setTimeout(resolve, 300));
     }
-  };
+
+    // Debug: Before encoding
+    console.log('Calling encodeMessage...');
+    const encodingResult = await SteganographyUtils.encodeMessage(
+      selectedImage,
+      message,
+      usePassword ? password : undefined
+    );
+    // Debug: Output
+    console.log('Encoding result:', encodingResult);
+
+    setProcessing(prev => ({ ...prev, progress: 100, status: 'Complete!' }));
+    setResult(encodingResult);
+
+    if (encodingResult.success) {
+      console.log('Message encoded successfully');
+      setMessage('');
+      setPassword('');
+    } else {
+      console.warn('Encoding reported failure:', encodingResult.error);
+    }
+  } catch (error) {
+    setResult({ success: false, error: 'Encoding failed' });
+    console.error('Encoding failed with error:', error);
+  } finally {
+    setTimeout(() => {
+      setProcessing({ isProcessing: false, progress: 0, status: '' });
+    }, 1000);
+  }
+};
+
 
   const handleDownload = () => {
     if (result?.imageUrl) {

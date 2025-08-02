@@ -79,10 +79,17 @@ export class SteganographyUtils {
           canvas.height = img.height;
           ctx.drawImage(img, 0, 0);
 
+          console.log('Encode: first 12 pixels after message embedded:', ctx.getImageData(0, 0, canvas.width, canvas.height).data.slice(0, 12));
+
+
           const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const pixels = imageData.data;
 
           let binaryMessage = '';
+
+          // Debug: Show first few pixel values
+        console.log('First 12 pixel color values:', Array.from(pixels).slice(0, 12));
+       
 
           // Extract bits from RGB channels
           for (let i = 0; i < pixels.length; i += 4) {
@@ -98,6 +105,8 @@ export class SteganographyUtils {
               ) {
                 const messageBits = binaryMessage.slice(0, -16);
                 let decodedMessage = this.binaryToText(messageBits);
+
+                
 
                 if (password) {
                   decodedMessage = this.decryptMessage(decodedMessage, password);
